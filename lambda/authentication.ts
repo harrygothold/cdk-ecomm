@@ -1,7 +1,7 @@
 import createResponse from './utils/createResponse';
 import AWS = require('aws-sdk');
 import { IUser } from '../utils/types';
-import { decodePassword, generateToken, hashPassword } from './utils/passwordUtils';
+import { decodePassword, decodeToken, generateToken, hashPassword } from './utils/passwordUtils';
 import { v4 as uuid } from 'uuid';
 const TABLE_NAME = process.env.TABLE_NAME || '';
 const JWT_SECRET = process.env.JWT_SECRET || '';
@@ -14,6 +14,18 @@ const getUser = async (email: string) => {
   }).promise();
   return user.Item;
 };
+
+const getCurrentUser = async (token: string) => {
+  const decoded = decodeToken(token, JWT_SECRET) as {[key: string]: string};
+  let user;
+  if (typeof decoded !== "string") {
+    user = await dynamo.get({
+      TableName: TABLE_NAME,
+      Key: { email: (decoded.userEmail) }
+    }).promise();
+  };
+  return user?.Item;
+}
 
 const createUser = async (data: Omit<IUser, 'id'>) => {
   const hashedPassword = await hashPassword(data.password);
@@ -35,10 +47,10 @@ const createUser = async (data: Omit<IUser, 'id'>) => {
 };
 
 exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
-  const { httpMethod, path, body } = event;
-  if (httpMethod === 'OPTIONS') {
-    createResponse('ok');
-  }
+  const { httpMethod, path, body, headers } = event;
+  if (httpMethod === "OPTIONS") {
+    return createResponse("ok");
+}
   if (!body) {
     return createResponse('Missing body', 500);
   }
@@ -62,6 +74,10 @@ exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
     }
     const newUser = await createUser(parsedBody);
     return createResponse(JSON.stringify(newUser), 201);
+  }
+  if (httpMethod === 'GET') {
+    const currentUser = await getCurrentUser(JSON.parse(body));
+    return currentUser ? createResponse(currentUser) : createResponse('User not found', 404);
   }
   return createResponse(
     `This endpoint doesn't accept this ${httpMethod} requests`,

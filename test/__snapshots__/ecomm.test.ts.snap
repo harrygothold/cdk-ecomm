@@ -1,0 +1,1764 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it works 1`] = `
+Object {
+  "Outputs": Object {
+    "authenticationEndpointC3F4C1DD": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "authenticationEndpoint10B279D2",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "authenticationEndpointDeploymentStageprod64276B80",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+    "productEndpoint06AE4C3A": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "productEndpoint8E4889F3",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "productEndpointDeploymentStageprodF0AFFC96",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": Object {
+    "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1ArtifactHash6407A135": Object {
+      "Description": "Artifact hash for asset \\"6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1\\"",
+      "Type": "String",
+    },
+    "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1S3BucketF729AB59": Object {
+      "Description": "S3 bucket for asset \\"6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1\\"",
+      "Type": "String",
+    },
+    "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1S3VersionKey647EEF5E": Object {
+      "Description": "S3 key for asset version \\"6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "AuthenticationBackendAuthentication44DBFF05": Object {
+      "DependsOn": Array [
+        "AuthenticationBackendAuthenticationServiceRoleDefaultPolicyEFBC34E2",
+        "AuthenticationBackendAuthenticationServiceRole04036AA7",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1S3BucketF729AB59",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1S3VersionKey647EEF5E",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1S3VersionKey647EEF5E",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "JWT_SECRET": "sfgsdfgsfgsdrtwertwertsfgsdf",
+            "TABLE_NAME": Object {
+              "Ref": "AuthenticationBackendUsersTableFFC0944A",
+            },
+          },
+        },
+        "Handler": "authentication.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthenticationServiceRole04036AA7",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "AuthenticationBackendAuthenticationServiceRole04036AA7": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "AuthenticationBackendAuthenticationServiceRoleDefaultPolicyEFBC34E2": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "AuthenticationBackendUsersTableFFC0944A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AuthenticationBackendAuthenticationServiceRoleDefaultPolicyEFBC34E2",
+        "Roles": Array [
+          Object {
+            "Ref": "AuthenticationBackendAuthenticationServiceRole04036AA7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "AuthenticationBackendUsersTableFFC0944A": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "email",
+            "AttributeType": "S",
+          },
+        ],
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "email",
+            "KeyType": "HASH",
+          },
+        ],
+        "ProvisionedThroughput": Object {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ProductBackendProductDF48EF68": Object {
+      "DependsOn": Array [
+        "ProductBackendProductServiceRoleDefaultPolicy4F55290B",
+        "ProductBackendProductServiceRoleFE797C21",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1S3BucketF729AB59",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1S3VersionKey647EEF5E",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters6b5baec06756ea122ceaa44923618440cb691b0c30edad8ad3cfe78dc9bf9fa1S3VersionKey647EEF5E",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "BUCKET_NAME": Object {
+              "Ref": "ProductBackendproductBucket85C4AD49",
+            },
+            "TABLE_NAME": Object {
+              "Ref": "ProductBackendProductsTable96B36AE3",
+            },
+          },
+        },
+        "Handler": "product.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductServiceRoleFE797C21",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs12.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ProductBackendProductServiceRoleDefaultPolicy4F55290B": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "ProductBackendProductsTable96B36AE3",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "ProductBackendproductBucket85C4AD49",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "ProductBackendproductBucket85C4AD49",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "ProductBackendproductBucket85C4AD49",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ProductBackendProductServiceRoleDefaultPolicy4F55290B",
+        "Roles": Array [
+          Object {
+            "Ref": "ProductBackendProductServiceRoleFE797C21",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ProductBackendProductServiceRoleFE797C21": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ProductBackendProductsTable96B36AE3": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "id",
+            "AttributeType": "S",
+          },
+        ],
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "id",
+            "KeyType": "HASH",
+          },
+        ],
+        "ProvisionedThroughput": Object {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ProductBackendproductBucket85C4AD49": Object {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "ProductBackendproductBucketPolicy013E0B13": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "ProductBackendproductBucket85C4AD49",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "ProductBackendproductBucket85C4AD49",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "authenticationEndpoint10B279D2": Object {
+      "Properties": Object {
+        "Name": "authenticationEndpoint",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "authenticationEndpointAccountD2ECC8AE": Object {
+      "DependsOn": Array [
+        "authenticationEndpoint10B279D2",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "authenticationEndpointCloudWatchRole023A283C",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+    },
+    "authenticationEndpointCloudWatchRole023A283C": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "authenticationEndpointDeployment1BD2743Ffd22bf424993e8df7f7c3695b2030886": Object {
+      "DependsOn": Array [
+        "authenticationEndpointregisterOPTIONSE8BFC5B4",
+        "authenticationEndpointregisterPOSTF86CF2C6",
+        "authenticationEndpointregister03345BF6",
+        "authenticationEndpointsigninOPTIONSFAA96493",
+        "authenticationEndpointsigninPOSTC146FEDF",
+        "authenticationEndpointsignin6042CBDE",
+      ],
+      "Properties": Object {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": Object {
+          "Ref": "authenticationEndpoint10B279D2",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "authenticationEndpointDeploymentStageprod64276B80": Object {
+      "Properties": Object {
+        "DeploymentId": Object {
+          "Ref": "authenticationEndpointDeployment1BD2743Ffd22bf424993e8df7f7c3695b2030886",
+        },
+        "RestApiId": Object {
+          "Ref": "authenticationEndpoint10B279D2",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "authenticationEndpointregister03345BF6": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "authenticationEndpoint10B279D2",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "register",
+        "RestApiId": Object {
+          "Ref": "authenticationEndpoint10B279D2",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "authenticationEndpointregisterOPTIONSApiPermissionTestStackauthenticationEndpoint387AA7AAOPTIONSregister000C6694": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthentication44DBFF05",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "authenticationEndpoint10B279D2",
+              },
+              "/",
+              Object {
+                "Ref": "authenticationEndpointDeploymentStageprod64276B80",
+              },
+              "/OPTIONS/register",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "authenticationEndpointregisterOPTIONSApiPermissionTestTestStackauthenticationEndpoint387AA7AAOPTIONSregister196D6F7A": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthentication44DBFF05",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "authenticationEndpoint10B279D2",
+              },
+              "/test-invoke-stage/OPTIONS/register",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "authenticationEndpointregisterOPTIONSE8BFC5B4": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "AuthenticationBackendAuthentication44DBFF05",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "authenticationEndpointregister03345BF6",
+        },
+        "RestApiId": Object {
+          "Ref": "authenticationEndpoint10B279D2",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "authenticationEndpointregisterPOSTApiPermissionTestStackauthenticationEndpoint387AA7AAPOSTregister867892A0": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthentication44DBFF05",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "authenticationEndpoint10B279D2",
+              },
+              "/",
+              Object {
+                "Ref": "authenticationEndpointDeploymentStageprod64276B80",
+              },
+              "/POST/register",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "authenticationEndpointregisterPOSTApiPermissionTestTestStackauthenticationEndpoint387AA7AAPOSTregisterD945A315": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthentication44DBFF05",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "authenticationEndpoint10B279D2",
+              },
+              "/test-invoke-stage/POST/register",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "authenticationEndpointregisterPOSTF86CF2C6": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "AuthenticationBackendAuthentication44DBFF05",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "authenticationEndpointregister03345BF6",
+        },
+        "RestApiId": Object {
+          "Ref": "authenticationEndpoint10B279D2",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "authenticationEndpointsignin6042CBDE": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "authenticationEndpoint10B279D2",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "signin",
+        "RestApiId": Object {
+          "Ref": "authenticationEndpoint10B279D2",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "authenticationEndpointsigninOPTIONSApiPermissionTestStackauthenticationEndpoint387AA7AAOPTIONSsigninA7155798": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthentication44DBFF05",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "authenticationEndpoint10B279D2",
+              },
+              "/",
+              Object {
+                "Ref": "authenticationEndpointDeploymentStageprod64276B80",
+              },
+              "/OPTIONS/signin",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "authenticationEndpointsigninOPTIONSApiPermissionTestTestStackauthenticationEndpoint387AA7AAOPTIONSsignin61C20D31": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthentication44DBFF05",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "authenticationEndpoint10B279D2",
+              },
+              "/test-invoke-stage/OPTIONS/signin",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "authenticationEndpointsigninOPTIONSFAA96493": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "AuthenticationBackendAuthentication44DBFF05",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "authenticationEndpointsignin6042CBDE",
+        },
+        "RestApiId": Object {
+          "Ref": "authenticationEndpoint10B279D2",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "authenticationEndpointsigninPOSTApiPermissionTestStackauthenticationEndpoint387AA7AAPOSTsignin2D05690D": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthentication44DBFF05",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "authenticationEndpoint10B279D2",
+              },
+              "/",
+              Object {
+                "Ref": "authenticationEndpointDeploymentStageprod64276B80",
+              },
+              "/POST/signin",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "authenticationEndpointsigninPOSTApiPermissionTestTestStackauthenticationEndpoint387AA7AAPOSTsignin02C86819": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "AuthenticationBackendAuthentication44DBFF05",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "authenticationEndpoint10B279D2",
+              },
+              "/test-invoke-stage/POST/signin",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "authenticationEndpointsigninPOSTC146FEDF": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "AuthenticationBackendAuthentication44DBFF05",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "authenticationEndpointsignin6042CBDE",
+        },
+        "RestApiId": Object {
+          "Ref": "authenticationEndpoint10B279D2",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "productEndpoint8E4889F3": Object {
+      "Properties": Object {
+        "Name": "productEndpoint",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "productEndpointAccountB0994FB9": Object {
+      "DependsOn": Array [
+        "productEndpoint8E4889F3",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "productEndpointCloudWatchRoleEB392FF5",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+    },
+    "productEndpointCloudWatchRoleEB392FF5": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "productEndpointDeployment3CF7DC9C38d3e82715cec782f9e2208e3fb6b82f": Object {
+      "DependsOn": Array [
+        "productEndpointproductproductidDELETEB14449EF",
+        "productEndpointproductproductidGET9D2D6017",
+        "productEndpointproductproductidD4E9AEAB",
+        "productEndpointproductGET2BB91825",
+        "productEndpointproductOPTIONS2A5F4EFF",
+        "productEndpointproductPOST63729DD9",
+        "productEndpointproduct3D8CC71D",
+      ],
+      "Properties": Object {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "productEndpointDeploymentStageprodF0AFFC96": Object {
+      "Properties": Object {
+        "DeploymentId": Object {
+          "Ref": "productEndpointDeployment3CF7DC9C38d3e82715cec782f9e2208e3fb6b82f",
+        },
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "productEndpointproduct3D8CC71D": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "productEndpoint8E4889F3",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "product",
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "productEndpointproductGET2BB91825": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "ProductBackendProductDF48EF68",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "productEndpointproduct3D8CC71D",
+        },
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "productEndpointproductGETApiPermissionTestStackproductEndpointF8F33113GETproductF65C47EF": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/",
+              Object {
+                "Ref": "productEndpointDeploymentStageprodF0AFFC96",
+              },
+              "/GET/product",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductGETApiPermissionTestTestStackproductEndpointF8F33113GETproduct841E3C82": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/test-invoke-stage/GET/product",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductOPTIONS2A5F4EFF": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "ProductBackendProductDF48EF68",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "productEndpointproduct3D8CC71D",
+        },
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "productEndpointproductOPTIONSApiPermissionTestStackproductEndpointF8F33113OPTIONSproduct166C6758": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/",
+              Object {
+                "Ref": "productEndpointDeploymentStageprodF0AFFC96",
+              },
+              "/OPTIONS/product",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductOPTIONSApiPermissionTestTestStackproductEndpointF8F33113OPTIONSproductC40BF9AA": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/test-invoke-stage/OPTIONS/product",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductPOST63729DD9": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "ProductBackendProductDF48EF68",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "productEndpointproduct3D8CC71D",
+        },
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "productEndpointproductPOSTApiPermissionTestStackproductEndpointF8F33113POSTproduct73A062DD": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/",
+              Object {
+                "Ref": "productEndpointDeploymentStageprodF0AFFC96",
+              },
+              "/POST/product",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductPOSTApiPermissionTestTestStackproductEndpointF8F33113POSTproductA992101C": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/test-invoke-stage/POST/product",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductproductidD4E9AEAB": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Ref": "productEndpointproduct3D8CC71D",
+        },
+        "PathPart": "{product_id}",
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "productEndpointproductproductidDELETEApiPermissionTestStackproductEndpointF8F33113DELETEproductproductid5DCF9D87": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/",
+              Object {
+                "Ref": "productEndpointDeploymentStageprodF0AFFC96",
+              },
+              "/DELETE/product/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductproductidDELETEApiPermissionTestTestStackproductEndpointF8F33113DELETEproductproductidE84DB3AF": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/test-invoke-stage/DELETE/product/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductproductidDELETEB14449EF": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "DELETE",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "ProductBackendProductDF48EF68",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "productEndpointproductproductidD4E9AEAB",
+        },
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "productEndpointproductproductidGET9D2D6017": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "ProductBackendProductDF48EF68",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "productEndpointproductproductidD4E9AEAB",
+        },
+        "RestApiId": Object {
+          "Ref": "productEndpoint8E4889F3",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "productEndpointproductproductidGETApiPermissionTestStackproductEndpointF8F33113GETproductproductidFAB8CB9F": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/",
+              Object {
+                "Ref": "productEndpointDeploymentStageprodF0AFFC96",
+              },
+              "/GET/product/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "productEndpointproductproductidGETApiPermissionTestTestStackproductEndpointF8F33113GETproductproductid3B26CA70": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ProductBackendProductDF48EF68",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "productEndpoint8E4889F3",
+              },
+              "/test-invoke-stage/GET/product/*",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+  },
+}
+`;

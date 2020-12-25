@@ -79,9 +79,7 @@ exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
 
     if (httpMethod === 'GET' && pathParameters?.product_id) {
       const product = await getProductById(pathParameters.product_id);
-      if (product) {
-        return createResponse(product, 200);
-      }
+      return product ? createResponse(product, 200) : createResponse('No product found', 404);
     }
 
     if (httpMethod === 'DELETE') {

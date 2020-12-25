@@ -24,6 +24,8 @@ export class EcommStack extends cdk.Stack {
       }
     );
 
+    authApi.root.addMethod('GET');
+
     const registerRouter = authApi.root.addResource('register');
     registerRouter.addMethod('POST');
     registerRouter.addMethod('OPTIONS');
