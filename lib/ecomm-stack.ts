@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as apiGateway from '@aws-cdk/aws-apigateway';
 import { Product } from './Product';
 import { Authentication } from './Authentication';
+import { Order } from './Order';
 
 export class EcommStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -9,6 +10,7 @@ export class EcommStack extends cdk.Stack {
 
     const product = new Product(this, 'ProductBackend');
     const authentication = new Authentication(this, 'AuthenticationBackend');
+    const order = new Order(this, 'OrderBackend');
 
     /*
      *
@@ -59,5 +61,25 @@ export class EcommStack extends cdk.Stack {
 
     const productRoutes: apiGateway.Resource[] = [products, singleProduct];
     productRoutes.forEach(route => route.addMethod('OPTIONS'));
+
+    /*
+     *
+     * Order routes
+     *
+     * */
+
+     const orderApi: apiGateway.LambdaRestApi = new apiGateway.LambdaRestApi(this, 'orderEndpoint', {
+        handler: order.handler,
+        proxy: false,
+     });
+     const orderRoute = orderApi.root.addResource('order');
+     orderRoute.addMethod('GET')
+     orderRoute.addMethod('POST')
+     const singleOrder = orderRoute.addResource('{order_id}');
+     singleOrder.addMethod('GET');
+
+     const orderRoutes: apiGateway.Resource[] = [orderRoute, singleOrder];
+     orderRoutes.forEach(route => route.addMethod('OPTIONS'));
+
   }
 }
