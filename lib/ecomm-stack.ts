@@ -53,9 +53,11 @@ export class EcommStack extends cdk.Stack {
     const products = productApi.root.addResource('product');
     products.addMethod('GET');
     products.addMethod('POST');
-    products.addMethod('OPTIONS');
     const singleProduct = products.addResource('{product_id}');
     singleProduct.addMethod('DELETE');
     singleProduct.addMethod('GET');
+
+    const productRoutes: apiGateway.Resource[] = [products, singleProduct];
+    productRoutes.forEach(route => route.addMethod('OPTIONS'));
   }
 }
