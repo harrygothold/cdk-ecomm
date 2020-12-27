@@ -1,31 +1,40 @@
 import createResponse from './utils/createResponse';
 import AWS = require('aws-sdk');
 import { IUser } from '../utils/types';
-import { decodePassword, decodeToken, generateToken, hashPassword } from './utils/passwordUtils';
+import {
+  decodePassword,
+  decodeToken,
+  generateToken,
+  hashPassword,
+} from './utils/passwordUtils';
 import { v4 as uuid } from 'uuid';
 const TABLE_NAME = process.env.TABLE_NAME || '';
 const JWT_SECRET = process.env.JWT_SECRET || '';
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
 const getUser = async (email: string) => {
-  const user = await dynamo.get({
+  const user = await dynamo
+    .get({
       TableName: TABLE_NAME,
-      Key: { email }
-  }).promise();
+      Key: { email },
+    })
+    .promise();
   return user.Item;
 };
 
 const getCurrentUser = async (token: string) => {
-  const decoded = decodeToken(token, JWT_SECRET) as {[key: string]: string};
+  const decoded = decodeToken(token, JWT_SECRET) as { [key: string]: string };
   let user;
-  if (typeof decoded !== "string") {
-    user = await dynamo.get({
-      TableName: TABLE_NAME,
-      Key: { email: (decoded.userEmail) }
-    }).promise();
-  };
+  if (typeof decoded !== 'string') {
+    user = await dynamo
+      .get({
+        TableName: TABLE_NAME,
+        Key: { email: decoded.userEmail },
+      })
+      .promise();
+  }
   return user?.Item;
-}
+};
 
 const createUser = async (data: Omit<IUser, 'id'>) => {
   const hashedPassword = await hashPassword(data.password);
@@ -48,9 +57,20 @@ const createUser = async (data: Omit<IUser, 'id'>) => {
 
 exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
   const { httpMethod, path, body, pathParameters } = event;
-  if (httpMethod === "OPTIONS") {
-    return createResponse("ok");
-}
+  if (httpMethod === 'OPTIONS') {
+    return createResponse('ok');
+  }
+  if (httpMethod === 'GET') {
+    const token = pathParameters?.token || '';
+    if (!token) {
+      return createResponse('No token passed', 500);
+    }
+    const currentUser = await getCurrentUser(token);
+    delete currentUser?.password;
+    return currentUser
+      ? createResponse(currentUser)
+      : createResponse('User not found', 404);
+  }
   if (!body) {
     return createResponse('Missing body', 500);
   }
@@ -58,12 +78,15 @@ exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
   if (httpMethod === 'POST' && path.includes('signin')) {
     const user = await getUser(parsedBody.email);
     if (!user) {
-        return createResponse('User does not exist', 404);
+      return createResponse('User does not exist', 404);
     }
-    const doesPasswordMatch = await decodePassword(user.password, parsedBody.password);
+    const doesPasswordMatch = await decodePassword(
+      user.password,
+      parsedBody.password
+    );
     if (!doesPasswordMatch) {
-        return createResponse('Passwords do not match', 400);
-    };
+      return createResponse('Passwords do not match', 400);
+    }
     const token = generateToken(user.email, JWT_SECRET);
     return createResponse(token, 200);
   }
@@ -74,11 +97,6 @@ exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
     }
     const newUser = await createUser(parsedBody);
     return createResponse(JSON.stringify(newUser), 201);
-  }
-  if (httpMethod === 'GET') {
-    const token = pathParameters?.token || '';
-    const currentUser = await getCurrentUser(token);
-    return currentUser ? createResponse(currentUser) : createResponse('User not found', 404);
   }
   return createResponse(
     `This endpoint doesn't accept this ${httpMethod} requests`,

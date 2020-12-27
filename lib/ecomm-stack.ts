@@ -24,16 +24,17 @@ export class EcommStack extends cdk.Stack {
       }
     );
 
-    const singleUser = authApi.root.addResource('{token}')
-    singleUser.addMethod('GET');
+    const singleUserRoute = authApi.root.addResource('{token}')
+    singleUserRoute.addMethod('GET');
 
-    const registerRouter = authApi.root.addResource('register');
-    registerRouter.addMethod('POST');
-    registerRouter.addMethod('OPTIONS');
+    const registerRoute = authApi.root.addResource('register');
+    registerRoute.addMethod('POST');
 
-    const signInRoot = authApi.root.addResource('signin');
-    signInRoot.addMethod('POST');
-    signInRoot.addMethod('OPTIONS');
+    const signInRoute = authApi.root.addResource('signin');
+    signInRoute.addMethod('POST');
+
+    const authRoots: apiGateway.Resource[] = [singleUserRoute, registerRoute, signInRoute];
+    authRoots.forEach(route => route.addMethod('OPTIONS'));
 
     /*
      *
