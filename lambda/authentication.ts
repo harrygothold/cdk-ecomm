@@ -47,7 +47,7 @@ const createUser = async (data: Omit<IUser, 'id'>) => {
 };
 
 exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
-  const { httpMethod, path, body, headers } = event;
+  const { httpMethod, path, body, pathParameters } = event;
   if (httpMethod === "OPTIONS") {
     return createResponse("ok");
 }
@@ -76,7 +76,8 @@ exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
     return createResponse(JSON.stringify(newUser), 201);
   }
   if (httpMethod === 'GET') {
-    const currentUser = await getCurrentUser(JSON.parse(body));
+    const token = pathParameters?.token || '';
+    const currentUser = await getCurrentUser(token);
     return currentUser ? createResponse(currentUser) : createResponse('User not found', 404);
   }
   return createResponse(
