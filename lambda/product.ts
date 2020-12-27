@@ -3,6 +3,7 @@ import { IProduct } from '../utils/types';
 import { v4 as uuid } from 'uuid';
 import createResponse from './utils/createResponse';
 import { uploadImageToS3 } from './utils/uploadImageToS3';
+import { checkIsAdmin } from './utils/checkIsAdmin';
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = process.env.TABLE_NAME || '';
@@ -57,12 +58,19 @@ const deleteProduct = async (id: string) => {
 };
 
 exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
-  const { httpMethod, body: requestBody, pathParameters } = event;
+  const { httpMethod, body: requestBody, pathParameters, headers } = event;
   try {
     if (httpMethod === 'OPTIONS') {
       return createResponse('Ok');
     }
     if (httpMethod === 'POST') {
+      if (!headers.Authorization) {
+        return createResponse('You are not authorized to complete this action', 403);
+      }
+      const isAdmin = await checkIsAdmin(headers.Authorization);
+      if (!isAdmin) {
+        return createResponse('You need to be an admin to complete this action', 403);
+      }
       if (!requestBody) {
         return createResponse('Missing request body', 500);
       }
@@ -83,6 +91,13 @@ exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
     }
 
     if (httpMethod === 'DELETE') {
+      if (!headers.Authorization) {
+        return createResponse('You are not authorized to complete this action', 403);
+      }
+      const isAdmin = await checkIsAdmin(headers.Authorization);
+      if (!isAdmin) {
+        return createResponse('You need to be an admin to complete this action', 403);
+      }
       if (!pathParameters?.product_id) {
         return createResponse('Product ID is missing', 500);
       }

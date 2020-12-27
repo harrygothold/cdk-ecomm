@@ -12,7 +12,7 @@ export const decodePassword = async (hashedPassword: string, password: string): 
 
 export const generateToken = (email: string, secret: string): string => {
     return jwt.sign({ userEmail: email }, secret, {
-        expiresIn: '2d'
+        expiresIn: '365d'
     });
 };
 
