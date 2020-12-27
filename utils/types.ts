@@ -14,3 +14,20 @@ export type IUser = {
   isAdmin: boolean;
   password: string;
 }
+
+interface OrderedProduct extends IProduct {
+  qty: number;
+}
+
+type Delivery = {
+  addressLine1: string;
+  addressLine2: string;
+  postCode: string;
+}
+
+export type IOrder = {
+  id: string;
+  product: OrderedProduct[],
+  user: IUser,
+  delivery: Delivery
+}
