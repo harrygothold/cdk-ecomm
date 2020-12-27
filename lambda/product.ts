@@ -47,6 +47,21 @@ const getProductById = async (id: string) => {
   return product.Item;
 }
 
+const reduceCountInStock = async (id: string, reducingStock: number) => {
+  const product = await getProductById(id);
+  const currentStock = product?.countInStock;
+  const newStock = currentStock - reducingStock
+  const result = await dynamo.update({
+    TableName: TABLE_NAME,
+    Key: { id },
+    UpdateExpression: 'set countInStock = :newStock',
+    ExpressionAttributeValues: {
+      'newStock': newStock
+    }
+  }).promise();
+  return result.Attributes;
+}
+
 const deleteProduct = async (id: string) => {
   await dynamo
     .delete({
@@ -83,6 +98,15 @@ exports.handler = async (event: AWSLambda.APIGatewayEvent) => {
     if (httpMethod === 'GET') {
       const allProducts = await getAllProducts();
       return createResponse(allProducts || []);
+    }
+
+    if (httpMethod === 'PUT') {
+      if (!pathParameters?.product_id || !requestBody) {
+        return createResponse('Request body or productId needed', 400);
+      }
+      const parsedBody = JSON.parse(requestBody);
+      const newProduct = reduceCountInStock(pathParameters.product_id, parsedBody);
+      return newProduct ? createResponse(newProduct) : createResponse('There was an error', 404);
     }
 
     if (httpMethod === 'GET' && pathParameters?.product_id) {

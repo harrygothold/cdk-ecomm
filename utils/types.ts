@@ -15,7 +15,7 @@ export type IUser = {
   password: string;
 }
 
-interface OrderedProduct extends IProduct {
+type OrderedProduct = IProduct & {
   qty: number;
 }
 

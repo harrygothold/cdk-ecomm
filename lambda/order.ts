@@ -2,6 +2,7 @@ import AWS = require('aws-sdk');
 import { IOrder } from '../utils/types';
 import { v4 as uuid } from 'uuid';
 import createResponse from './utils/createResponse';
+import axios from 'axios';
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = process.env.TABLE_NAME || '';
@@ -26,6 +27,10 @@ const getSingleOrder = async (orderId: string) => {
 };
 
 const createOrder = async (order: Omit<IOrder, 'id'>) => {
+  const { product } = order;
+  product.forEach(async p => {
+    await axios.put(`https://23ii7hvre8.execute-api.eu-west-2.amazonaws.com/prod/${p.id}`, p.qty);
+  });
   const newOrder = await dynamo
     .put({
       TableName: TABLE_NAME,
