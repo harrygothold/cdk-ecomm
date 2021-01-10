@@ -23,6 +23,7 @@ type Delivery = {
   addressLine1: string;
   addressLine2: string;
   postCode: string;
+  country: string;
 }
 
 export type IOrder = {
